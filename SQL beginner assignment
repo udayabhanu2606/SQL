@@ -1,0 +1,103 @@
+DROP TABLE sales;
+
+CREATE TABLE sales 
+(
+`Order ID` Varchar(6) NOT NULL,
+`Order Date` date,
+`Customer ID` Varchar(10),
+`Customer Name` Varchar(15),
+`Sales Person` Varchar(15),
+Region Varchar(15),
+`Product_Type` Varchar(15),
+Price INT,
+Quantity INT,
+PRIMARY KEY(`Order ID`)
+)
+;
+INSERT INTO sales 
+(
+`Order ID`,
+`Order Date`,
+`Customer ID`,
+`Customer Name`,
+`Sales Person`,
+Region,
+`Product_Type`,
+Price,
+Quantity
+)
+VALUES
+('2001', '2022-01-04', '101','Company Z', 'Kamy Andrews', 'Texas', 'Product 4', 401, 7),
+('2002', '2022-01-04', '102','Company Z', 'Nirmal Andrews', 'Arizona', 'Product 4', 402, 15),
+('2003', '2022-01-06', '103','Company Z', 'Rahul Kunnath', 'California', 'Product 4', 403, 7),
+('2004', '2022-01-07', '104','Company Z', 'Sushil Nair', 'Atlanta', 'Product 4', 404, 8),
+('2005', '2022-01-08', '105','Company Z', 'Rama Rahim', 'Florida', 'Product 4', 405, 11)
+;
+
+SELECT *FROM sales ORDER BY `Order Date`, Quantity desc;
+
+CREATE TABLE sales_bkp AS SELECT *FROM sales;
+
+SELECT *FROM sales_bkp; 
+
+DELETE FROM sales_bkp WHERE `Order ID` = 2001;
+
+ALTER TABLE sales_bkp 
+ADD COLUMN Created Varchar(7) default 'Bhanu';
+
+ALTER TABLE sales_bkp
+Rename Column Created TO CreatedBy; 
+
+SELECT * FROM sales_bkp;
+
+SELECT `Order ID`, CreatedBy,  `Sales Person`, Price from sales_bkp;
+
+ALTER TABLE sales_bkp
+DROP COLUMN CreatedBy;
+
+SELECT * FROM sales_bkp;
+
+DROP Table sales_bkp;
+
+Create table sales_data 
+(
+`Order ID` Varchar(6) NOT NULL,
+`Order Date` date,
+`Customer ID` Varchar(10),
+`Customer Name` Varchar(15),
+`Sales Person` Varchar(15),
+Region Varchar(15),
+`Product_Type` Varchar(15),
+Price INT,
+Quantity INT,
+PRIMARY KEY(`Order ID`)
+)
+;
+
+SELECT *FROM sales_data limit 10;
+
+DESCRIBE TABLE sales_data;
+
+DESCRIBE sales_data;
+
+SELECT *from sales_data;
+
+SELECT *from sales_data WHERE Region = 'California';
+
+SELECT MIN(Price), MAX(Price), SUM(Price), AVG(Price), MIN(Quantity), MAX(Quantity), SUM(Quantity), AVG(Quantity) FROM sales_data;
+
+SELECT Product_Type, COUNT(`Order ID`) FROM sales_data Group by Product_Type;
+
+ALTER TABLE sales_Data
+ADD Column Revenue int DEFAULT (Price*Quantity);
+
+SELECT *from sales_data;
+
+SELECT `Sales Person`, SUM(Revenue) from sales_data Group by `Sales Person`;
+
+SELECT `Order ID` FROM sales_data WHERE (Revenue < 3000 and Revenue > 1000) AND Region = 'Texas';
+
+SELECT `Sales Person`, SUM(Revenue) AS TotalRevenue
+FROM sales_data
+GROUP BY `Sales Person`
+HAVING SUM(Revenue) > 250000;
