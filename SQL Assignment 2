@@ -1,0 +1,250 @@
+select * from datasales limit 10; 
+
+ALTER table datasales
+modify `Order Date` date;
+
+describe datasales;
+
+ALTER table datasales
+add column Sales int default (Price*Quantity) ;
+
+-- Get the sales by year. Which year post the highest sales?
+
+select sum(sales), year(`Order date`) from datasales
+group by 2;
+
+-- Highest sales are posted in Year 2021.
+
+-- Create 3 new columns - Year, Month and Day. Use DATE related Functions to derive these values from the Order Date column
+
+Alter table datasales
+add column `Month` int default (Month(`Order Date`)),
+add column `Year` int default (year(`Order Date`)),
+add column `Day` int default (day(`Order Date`));
+ 
+select * from datasales limit 10;
+
+-- Find the Length of each sales person’s name
+
+select length(`Sales Person`), `Sales Person` from datasales;
+
+-- In a new column, concatenate Sales Person and Manager Name separated by a "-". It should be entirely in lower case
+
+select lower(concat(`Sales Person`,"-",`Customer Name`)) from datasales;
+
+-- Split the sales_person name into first name and last name
+
+SELECT 
+substring_index(`Sales Person`, ' ', -1) as `First name`,
+substring_index(`Sales Person`, ' ', 1) as `Last name`
+from datasales;
+
+-- Find the Length of each sales person’s name
+
+select `Sales Person`, length(`First name`)+length(`Last name`) as len from 
+(
+SELECT `Sales Person`,
+substring_index(`Sales Person`, ' ', -1) as `First name`,
+substring_index(`Sales Person`, ' ', 1) as `Last name`
+from datasales
+) as a
+;
+
+-- Products are split into two categories. Category 1 has Product 1,2 and 3 while Category 2 has Product 4 and 5. Get revenue for each category
+
+Select sum(Sales) as Revenue, 
+CASE 
+	When `Product_Type` = 'Product 1' or `Product_Type` = 'Product 2' or `Product_Type` = 'Product 3' then 'Category 1'
+    ELSE 'Category 2'
+END as Category
+from datasales
+group by 2
+;
+
+
+-- Get the list of orders where sales value is less than the corresponding region’s average sales value
+
+select `Order ID`, Sales, Region, mean_sales 
+from 
+(
+select `Order ID`, sales,
+avg(sales) OVER (partition by region) as mean_sales, 
+region from datasales
+) as a
+where sales > mean_sales
+;
+
+-- Ensure you have “Orders”, “People” and “Returns” tables loaded into a schema. These are the same files that were used in previous lectures.
+
+select * from returns limit 10;
+select * from orders limit 10;
+select * from people limit 10;
+select * from datasales limit 10;
+
+
+-- Get the list of orders where sales value is less than the corresponding region’s average sales value
+
+select Sales, `Order ID`, Region, Mean_sales from
+(
+select `Order ID`, Sales, Region,
+avg(sales) over (partition by region) as Mean_sales from orders 
+) as a
+Where sales > mean_sales
+;
+
+-- Find the average sales value of Returned vs Non-Returned Sales Orders
+
+Select avg(sales) as mean_sales, Returned from
+(
+select o.`Order ID`, r.Returned, o.Sales from orders o
+left join returns r 
+on o.`Order ID` = r.`Order ID`
+Union 
+select o.`Order ID`, r.Returned, o.Sales from orders o
+right join returns r
+on o.`Order ID` = r.`Order ID`
+) as a
+group by 2
+;
+
+SELECT 
+    AVG(a.sales) as avg_sales, a.Returned
+FROM (
+    SELECT o.`Order ID`, o.sales, IF(r.`Order ID` IS NULL, 'No', 'Yes') AS Returned
+    FROM orders o
+    LEFT JOIN returns r ON o.`Order ID` = r.`Order ID`
+    UNION
+    SELECT o.`Order ID`, o.sales, IF(r.`Order ID` IS NULL, 'No', 'Yes') AS Returned
+    FROM returns r
+    LEFT JOIN orders o ON r.`Order ID` = o.`Order ID`
+) AS a
+group by 2;
+
+Create table joined
+(
+    SELECT o.`Order ID`, o.sales, IF(r.`Order ID` IS NULL, 'No', 'Yes') AS Returned
+    FROM orders o
+    LEFT JOIN returns r ON o.`Order ID` = r.`Order ID`
+    UNION
+    SELECT o.`Order ID`, o.sales, IF(r.`Order ID` IS NULL, 'No', 'Yes') AS Returned
+    FROM returns r
+    LEFT JOIN orders o ON r.`Order ID` = o.`Order ID`
+);
+
+select * from joined limit 10;
+
+drop table joined;
+
+-- Using EXISTS operator, find the list of orders that have been returned.
+
+Select Returned, `Order ID` from returns as r 
+where exists
+(
+Select `Order ID` from orders as o
+where r.`Order ID` = o.`Order ID`
+
+);
+
+Select `Order ID` from orders as o 
+where exists
+(
+Select `Order ID` from returns as r
+where r.`Order ID` = o.`Order ID`
+);
+
+select * from returns;
+
+-- Using CTE & JOINS, find the total sales for each Regional Manager
+
+With people_orders as 
+(
+select p.Region, p.`Regional Manager` as `Regional Manager`, o.sales as sales from orders o 
+left join people p
+on o.Region = p.Region
+)
+select sum(sales), `Regional Manager` from people_orders
+group by 2;
+
+-- Using CTE, find the total average revenue per customer (ARPU) for each Segment (hint: ARPU = Total Revenue/Total Customers)
+
+With orders_seg as 
+(
+select Segment, sum(Revenue) as rev_seg,
+count(`Customer Name`) as tot_cus_seg
+from orders
+group by 1
+)
+select rev_seg/tot_cus_seg, Segment from orders_seg
+;
+
+-- Using window functions, compare each order’s sales value with the average, minimum & maximum sales value of that ship mode
+
+Select `Order ID`, Sales, 
+avg(sales) over (partition by `Ship Mode`) as mean_sales,
+min(sales) over (partition by `Ship Mode`) as min_sales,
+max(sales) over (partition by `Ship Mode`) as max_sales
+from orders;
+
+-- Find the 2nd highest and 2nd lowest value order for each region
+
+Select sales, `Order ID`, region,
+rank() over (partition by region order by sales) as sales_lowtohigh,
+rank() over (partition by region order by sales desc) as sales_hightolow 
+from orders
+;
+
+-- Use the LAG function to get Year-on-year sales change
+
+select * from orders limit 10;
+
+/* select year(`Order date`) as year_of_sales, sum(sales) as Sales_tot 
+from orders
+group by 1; 
+*/
+
+/*
+select year_of_sales, Sales_tot, lag(Sales_tot, 1) OVER (order by year_of_sales) as sales_prev_yr
+from (select year(`Order date`) as year_of_sales, sum(sales) as Sales_tot 
+from orders
+group by 1) as a;
+*/
+
+
+With Sales_data as 
+(select year_of_sales, Sales_tot, lag(Sales_tot, 1) OVER (order by year_of_sales) as sales_prev_yr
+from (select year(`Order date`) as year_of_sales, sum(sales) as Sales_tot 
+from orders
+group by 1) as a)
+select year_of_sales, (Sales_tot - sales_prev_yr) from Sales_data;
+
+-- Find the total sales value of returned orders for each Category
+
+with returned_sales as 
+(
+Select sales, Category, o.`Order ID`, returned from 
+orders o 
+left join 
+returns r
+on o.`Order ID` = r.`Order ID`
+Where returned is not null
+)
+Select sum(sales), Category
+from returned_sales
+group by 2;
+
+-- Using LEFT JOIN, Find the list of orders that have not been returned
+
+Select o.`order id`, returned 
+from orders o
+left join returns r
+on o.`order id` = r.`order id`
+where returned is null;
+
+-- Using Inner join, Find the list of orders that have been returned
+
+select o.`order id`, returned from orders o
+inner join 
+returns r
+on o.`Order ID` = r.`Order ID`
+WHERE returned is not null;
+
