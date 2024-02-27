@@ -1,0 +1,906 @@
+CREATE TABLE Company.employee1
+(
+    ID INT NOT NULL,
+    NAME VARCHAR(45) NULL,
+    AGE INT NULL,  -- Assuming age is a whole number
+    CITY VARCHAR(45) NULL,
+    SALARY DECIMAL(10, 2) NULL,  -- Assuming salary might have decimal places
+    PRIMARY KEY (ID) 
+);
+
+SELECT *FROM practice.orders;
+
+SELECT `Order Date` FROM `practice`.`orders`;
+SELECT `Order Date` FROM `practice`.`orders`;
+
+INSERT INTO `practice`.`orders`
+(`Order Date`)
+VALUES
+(<{Order Date}>);
+
+UPDATE `practice`.`orders`
+SET
+`Order Date` = <{Order Date}>
+WHERE <{where_expression}>;
+
+
+
+create database dbname;
+create table dbname.orders1
+(
+rowid char(5),
+orderid varchar(7) not null unique,
+orderdate date,
+customerid varchar(15),
+sales double,
+quantity integer,
+primary key (rowid)
+)
+;
+describe dbname.orders1;
+
+insert into dbname.orders1 
+(rowid, orderid, orderdate, customerid, sales, quantity)
+values
+(10, null, '2023-7-11', 'xyz5', 399, 7)
+;
+
+select *from dbname.orders1;
+
+select orderid from dbname.orders1;
+
+select * from dbname.orders;
+
+select `Customer ID` from dbname.orders; 
+
+select `Customer ID` from orders; 
+
+select `Row ID`, `Customer ID`, `Order ID`, Sales from dbname.orders; 
+
+UPDATE orders
+SET Sales = 100
+WHERE `Row ID` = 1
+; 
+
+SELECT Sales, `Row ID` from orders;
+
+CREATE TABLE orders_bkp AS
+(SELECT *FROM orders) ;
+
+SELECT `Row ID`, `Order Id`, `CUSTOMER ID`, Sales FROM orders;
+
+UPDATE orders_bkp 
+SET Sales = 100
+;
+
+SELECT * FROM orders_bkp;
+
+DROP table orders_bkp;
+
+DELETE FROM orders_bkp
+WHERE Sales > 100
+;
+
+DELETE FROM orders_bkp
+WHERE `Row ID` = 1;
+
+TRUNCATE orders_bkp;
+
+SELECT *from dbname.orders1;
+
+SELECT *FROM orders1;
+
+ALTER TABLE orders1
+ADD COLUMN testcol varchar(10);
+
+ALTER TABLE orders1
+Modify column testcol date;
+
+Describe orders1;
+
+ALTER Table orders1
+RENAME column testcol to datecol;
+
+Create database practice_crud;
+DROP table if exists returns;
+CREATE TABLE returns 
+(
+order_id varchar(15),
+returned varchar(3) DEFAULT 'Yes',
+primary key (order_id)
+)
+;
+
+SELECT *FROM returns;
+
+INSERT INTO returns 
+(
+order_id
+)
+values
+(
+1
+)
+;
+
+SELECT order_id from returns;
+
+UPDATE returns
+SET returned = 'No'
+WHERE order_id = 1;
+
+
+
+
+UPDATE returns
+SET returned = 'Yes'
+;
+
+
+DELETE FROM returns
+WHERE returned = 'No'
+;
+
+SELECT *FROM returns;
+
+ALTER table returns
+ADD column return_date varchar(10)
+;
+
+SELECT *FROM returns;
+
+ALTER table returns
+MODIFY column return_date date
+;
+
+SELECT *FROM returns;
+
+DESCRIBE returns;
+
+ALTER table returns 
+DROP return_date;
+
+DESCRIBE returns;
+
+TRUNCATE table returns;
+
+SELECT *FROM returns;
+
+DROP table returns;
+
+SELECT *FROM orders;
+
+SELECT *FROM orders
+WHERE segment = 'Consumer'
+;
+
+SELECT *FROM orders
+WHERE Category = 'Technology'
+;
+
+SELECT 'Order ID', 'State/Province', Category, Sales FROM orders
+WHERE Category = 'Technology'
+;
+
+SELECT *FROM orders WHERE Region = 'Central' and 'Sub-Category' = 'Paper';
+
+SELECT * FROM orders WHERE Region = 'Central' AND `Sub-Category` = 'Paper';
+
+SELECT *FROM orders WHERE Region = 'Central' or 'Sub-Category' = 'Paper';
+
+SELECT * FROM orders WHERE (Region = 'Central' AND `Sub-Category` = 'Paper') or (`Sub-Category` = 'Accessories');
+
+SELECT * FROM orders WHERE (Region = 'Central') AND (`Sub-Category` = 'Paper' or `Sub-Category` = 'Accessories');
+
+SELECT * FROM orders WHERE `State/Province` <> 'Alabama' AND `State/Province` <> 'Texas';
+
+SELECT * FROM orders WHERE `Order Date` >= '2022-01-01' AND `Order Date` <= '2022-03-31';
+
+SELECT * FROM orders WHERE `Order Date` BETWEEN '2022-01-01' AND '2022-03-31';
+
+SELECT * FROM orders WHERE Sales BETWEEN 500 AND 600;
+
+SELECT * FROM orders WHERE `Customer Name` IN ('Natalie DeCherney', 'Chris Selesnick', 'Filia McAdams');
+
+SELECT *FROM orders WHERE `Customer Name` IS NULL;
+
+SELECT *FROM orders WHERE `Customer Name` IS NOT NULL;
+
+SELECT *FROM orders WHERE `Sub-Category` LIKE '%er%';
+
+SELECT *FROM orders ORDER BY Category desc;
+
+SELECT *FROM orders;
+
+SELECT *FROM orders WHERE Region = 'Central' and `Sub-Category` = 'Paper' ORDER BY Category desc;
+
+SELECT DISTINCT(`State/Province`) FROM orders ORDER BY `State/Province` desc ;
+
+SELECT *FROM orders WHERE `State/Province` = 'Michigan';
+
+SELECT `Order ID`, `State/Province`, Sales, Quantity, Category FROM orders WHERE Category = 'Technology';
+
+SELECT `Order ID`, `State/Province`, Quantity FROM orders WHERE `State/Province` = 'Wyoming' AND Quantity > 5;
+
+SELECT *FROM orders WHERE `Sub-Category` = 'Phones' OR `Sub-Category` = 'Machines';
+
+SELECT `Customer Name` FROM orders WHERE `Customer Name` LIKE '%usa%' ORDER BY `Customer Name`;
+
+SELECT DISTINCT(`Sub-Category`) FROM orders ORDER BY `Sub-Category`;
+
+SELECT COUNT(DISTINCT `State/Province`), COUNT(DISTINCT Segment), COUNT(DISTINCT Category), COUNT(`Customer Name`) FROM orders;
+
+SELECT SUM(Sales) AS Total_Sales, SUM(Quantity) AS Total_Sales, SUM(Discount), SUM(Profit) FROM orders;
+
+SELECT AVG(Sales) AS Avg_Sales, AVG(Quantity) AS Avg_Sales, AVG(Discount), AVG(Profit) FROM orders;
+
+SELECT MIN(Sales), MIN(Quantity), MIN(Discount), MIN(Profit), MAX(Sales), MAX(Quantity), MAX(Discount), MAX(Profit) FROM orders;
+
+SELECT Segment, SUM(Sales) FROM orders GROUP BY Segment;
+
+SELECT Segment FROM orders GROUP BY Segment;
+
+SELECT Segment FROM orders;
+
+SELECT category, `sub-category`, SUM(Sales) FROM orders GROUP BY category, `sub-category` ORDER BY category, `sub-category`;
+
+SELECT category, SUM(Sales) FROM orders GROUP BY category ORDER BY category;
+
+SELECT category, `sub-category`, SUM(Sales) FROM orders GROUP BY category, `sub-category` ORDER BY category, SUM(Sales) desc;
+
+SELECT category, `sub-category`, SUM(Sales) FROM orders GROUP BY 1, 2 ORDER BY 1, 3 desc;
+
+SELECT Segment, SUM(Sales) FROM orders GROUP BY Segment HAVING SUM(Sales) > 500000;
+
+SELECT *FROM orders limit 10;
+
+SELECT *FROM orders limit 10 OFFSET 6;
+
+SELECT Count(Distinct `Sub-Category`) from orders;
+
+SELECT `Sub-Category`, AVG(Discount) FROM orders Group by `Sub-Category`;
+
+SELECT Region, SUM(Profit) From orders Group by Region;
+
+SELECT `Sub-Category`, MAX(Sales), MIN(Sales) From orders group by `Sub-Category` Having `Sub-Category` = 'Phones' or `Sub-Category` = 'Chairs';
+
+SELECT Region, Count(*) From orders Group by Region;
+
+DROP TABLE sales;
+
+CREATE TABLE sales 
+(
+`Order ID` Varchar(6) NOT NULL,
+`Order Date` date,
+`Customer ID` Varchar(10),
+`Customer Name` Varchar(15),
+`Sales Person` Varchar(15),
+Region Varchar(15),
+`Product_Type` Varchar(15),
+Price INT,
+Quantity INT,
+PRIMARY KEY(`Order ID`)
+)
+;
+
+INSERT INTO sales 
+(
+`Order ID`,
+`Order Date`,
+`Customer ID`,
+`Customer Name`,
+`Sales Person`,
+Region,
+`Product_Type`,
+Price,
+Quantity
+)
+VALUES
+('2001', '2022-01-04', '101','Company Z', 'Kamy Andrews', 'Texas', 'Product 4', 401, 7),
+('2002', '2022-01-05', '102','Company Z', 'Nirmal Andrews', 'Arizona', 'Product 4', 401, 7),
+('2003', '2022-01-06', '103','Company Z', 'Rahul Kunnath', 'California', 'Product 4', 401, 7),
+('2004', '2022-01-07', '104','Company Z', 'Sushil Nair', 'Atlanta', 'Product 4', 401, 7),
+('2005', '2022-01-08', '105','Company Z', 'Rama Rahim', 'Florida', 'Product 4', 401, 7)
+;
+
+SELECT *FROM sales ORDER BY `Order Date`, Quantity desc;
+
+CREATE TABLE sales_bkp AS SELECT *FROM sales;
+
+SELECT *FROM sales_bkp; 
+
+Drop table sales;
+
+SELECT *FROM sales_bkp; 
+
+SELECT *FROM sales_data limit 10;
+
+SELECT MIN(Revenue), MAX(Revenue)  FROM sales_data;
+
+SELECT `Order ID`, Price, 
+CASE
+	WHEN 'Revenue' < 1000 THEN 'Bad'
+   	WHEN 'Revenue' < 2500 THEN 'OK'
+    ELSE 'Good'
+END AS Cond    
+FROM sales_data;
+
+SELECT `Order ID`, Price, 
+CASE
+	WHEN Revenue < 1000 THEN 'Bad'
+   	WHEN Revenue < 2500 THEN 'OK'
+    ELSE 'Good'
+END AS Sale_data,
+CASE
+	WHEN Price > 200 THEN 'Positive'
+    ELSE 'Negative'
+END AS Profit_data
+FROM sales_data;
+
+SELECT *from orders limit 10;
+
+SELECT 
+CASE
+	WHEN Sales BETWEEN 0 and 100 THEN '0-100'
+    WHEN Sales BETWEEN 101 and 1000 THEN '101-1000'
+    ELSE '>1000'
+END AS Sales_bins,
+count(`Order ID`) 
+FROM orders
+Group by 1
+;
+
+Describe table orders;
+
+SELECT 
+CASE
+	WHEN Sales BETWEEN 0 and 100 THEN '0-100'
+    WHEN Sales BETWEEN 101 and 1000 THEN '101-1000'
+    WHEN Sales > 1000 THEN '>1000'
+    ELSE 'Not Applicable'
+END AS Sales_bins,
+count(`Order ID`) 
+FROM orders
+Group by 1
+;
+
+SELECT 
+CASE
+	WHEN Sales BETWEEN 0 and 100 THEN '0-100'
+    WHEN Sales BETWEEN 101 and 1000 THEN '101-1000'
+    WHEN Sales > 1000 THEN '>1000'
+    ELSE 'Not Applicable'
+END AS Sales_bins,
+count(`Order ID`) 
+FROM orders
+Group by 1
+;
+
+SELECT *FROM orders limit 250;
+
+SELECT Region, 
+Round(SUM(CASE When Category = 'Office Supplies' THEN Sales ELSE 0 END)) AS 'Office_Supplies_Sales',
+Round(SUM(CASE When Category = 'Furniture' THEN Sales ELSE 0 END)) AS 'Furniture_Sales' ,
+Round(SUM(CASE When Category = 'Technology' THEN Sales ELSE 0 END)) AS 'Technology_Sales'
+From orders
+Group by 1
+;
+
+SELECT `Ship Mode`, Category, `sub-category`, round(SUM(sales)) as sales_sum from orders 
+group by 1,2,3
+order by 1,2,3
+;
+
+SELECT `Ship Mode`, Category, `sub-category`, round(SUM(sales)) as sales_sum from orders 
+group by 1,2,3
+order by `Ship Mode`,
+CASE 
+    WHEN `Ship Mode` = 'First Class' THEN Category
+    WHEN `Ship Mode` = 'Same Day' THEN `sub-category`
+    ELSE Category
+END
+;
+
+
+DROP TABLE sales;
+
+CREATE TABLE sales 
+(
+`Order ID` Varchar(6) NOT NULL,
+`Order Date` date,
+`Customer ID` Varchar(10),
+`Customer Name` Varchar(15),
+`Sales Person` Varchar(15),
+Region Varchar(15),
+`Product_Type` Varchar(15),
+Price INT,
+Quantity INT,
+PRIMARY KEY(`Order ID`)
+)
+;
+INSERT INTO sales 
+(
+`Order ID`,
+`Order Date`,
+`Customer ID`,
+`Customer Name`,
+`Sales Person`,
+Region,
+`Product_Type`,
+Price,
+Quantity
+)
+VALUES
+('2001', '2022-01-04', '101','Company Z', 'Kamy Andrews', 'Texas', 'Product 4', 401, 7),
+('2002', '2022-01-04', '102','Company Z', 'Nirmal Andrews', 'Arizona', 'Product 4', 402, 15),
+('2003', '2022-01-06', '103','Company Z', 'Rahul Kunnath', 'California', 'Product 4', 403, 7),
+('2004', '2022-01-07', '104','Company Z', 'Sushil Nair', 'Atlanta', 'Product 4', 404, 8),
+('2005', '2022-01-08', '105','Company Z', 'Rama Rahim', 'Florida', 'Product 4', 405, 11)
+;
+
+SELECT *FROM sales ORDER BY `Order Date`, Quantity desc;
+
+CREATE TABLE sales_bkp AS SELECT *FROM sales;
+
+SELECT *FROM sales_bkp; 
+
+DELETE FROM sales_bkp WHERE `Order ID` = 2001;
+
+ALTER TABLE sales_bkp 
+ADD COLUMN Created Varchar(7) default 'Bhanu';
+
+ALTER TABLE sales_bkp
+Rename Column Created TO CreatedBy; 
+
+SELECT * FROM sales_bkp;
+
+SELECT `Order ID`, CreatedBy,  `Sales Person`, Price from sales_bkp;
+
+ALTER TABLE sales_bkp
+DROP COLUMN CreatedBy;
+
+SELECT * FROM sales_bkp;
+
+DROP Table sales_bkp;
+
+Create table sales_data 
+(
+`Order ID` Varchar(6) NOT NULL,
+`Order Date` date,
+`Customer ID` Varchar(10),
+`Customer Name` Varchar(15),
+`Sales Person` Varchar(15),
+Region Varchar(15),
+`Product_Type` Varchar(15),
+Price INT,
+Quantity INT,
+PRIMARY KEY(`Order ID`)
+)
+;
+
+SELECT *FROM sales_data limit 10;
+
+DESCRIBE TABLE sales_data;
+
+DESCRIBE sales_data;
+
+SELECT *from sales_data;
+
+SELECT *from sales_data WHERE Region = 'California';
+
+SELECT MIN(Price), MAX(Price), SUM(Price), AVG(Price), MIN(Quantity), MAX(Quantity), SUM(Quantity), AVG(Quantity) FROM sales_data;
+
+SELECT Product_Type, COUNT(`Order ID`) FROM sales_data Group by Product_Type;
+
+ALTER TABLE sales_Data
+ADD Column Revenue int DEFAULT (Price*Quantity);
+
+SELECT *from sales_data;
+
+SELECT `Sales Person`, SUM(Revenue) from sales_data Group by `Sales Person`;
+
+SELECT `Order ID` FROM sales_data WHERE (Revenue < 3000 and Revenue > 1000) AND Region = 'Texas';
+
+SELECT `Sales Person`, SUM(Revenue) AS TotalRevenue
+FROM sales_data
+GROUP BY `Sales Person`
+HAVING SUM(Revenue) > 250000;
+
+Select * from orders limit 10;
+
+Select distinct(Discount) from orders;
+
+Select `Order ID`,Discount,
+CASE 
+	WHEN Discount <= 3 then "Low"
+    WHEN Discount <= 7 then "Medium"
+    ELSE "High"
+END AS Cate
+from orders;    
+
+Select `Order ID`, `Ship Mode`,
+CASE
+	WHEN `Ship Mode` = 'First Class' THEN 'Yes'
+    ELSE 'No'
+END AS `Is_FirstClass`
+From orders;
+
+SELECT `Order ID`, Sales, Discount 
+From orders
+WHERE CASE
+		WHEN Discount > 0 THEN Sales > 1000
+		WHEN Discount = 0 THEN Sales < 500
+		ELSE 0
+END;
+
+Select Discount, Sales from orders where Discount = 0 and Sales < 500;
+
+
+Select current_date();
+
+SELECT current_time();
+
+SELECT now();
+
+SELECT date(now());
+SELECT time(now());
+
+SELECT *FROM orders limit 10;
+
+SELECT `Order Date`,
+extract(year from `Order Date`) as yr,
+extract(month from `Order Date`) as mth,
+extract(week from `Order Date`) as wk,
+extract(day from `Order Date`) as dayofmth,
+month(`Order Date`), 
+year(`Order Date`), 
+week(`Order Date`), 
+day(`Order Date`)
+from orders;
+
+SELECT `Order Date`, date_format(`Order Date`, '%d-%m-%y') as df1,
+date_format(`Order Date`, '%D-%M-%Y') as df2,
+date_format(`Order Date`, '%d-%m-%Y') as df3
+from orders;
+
+SELECT `Order Date`, 
+date_add(`Order Date`, interval 1 day) add1day,
+date_add(`Order Date`, interval 1 month) add1mth,
+date_add(`Order Date`, interval 1 year) add1yr,
+date_sub(`Order Date`, interval 1 day) sub1day,
+date_sub(`Order Date`, interval 1 month) sub1mth,
+date_sub(`Order Date`, interval 1 year) sub1yr
+from orders;
+
+SELECT now(), date_add(now(), interval 1 hour) ;
+
+SELECT `Order Date`, `Ship Date`, datediff(`Ship Date`, `Order Date`) as dtdf 
+from orders;
+
+SELECT `Order Date`, last_day(`Order Date`)
+FROM orders;
+
+SELECT `Order Date`, sum(Sales) 
+FROM orders
+WHERE last_day(`Order Date`) = '2019-02-28'
+group by `Order Date`;
+
+SELECT `Order Date`, sum(Sales) 
+FROM orders
+WHERE month(`Order Date`) = 2 and year(`Order Date`) = 2019
+group by `Order Date`;
+
+SELECT *FROM orders limit 10;
+
+SELECT `Customer Name`, length(`Customer Name`), Category, length(Category) as len from orders limit 10;
+
+SELECT DISTINCT(`Customer Name`), length(`Customer Name`) 
+from orders 
+group by 1;
+
+SELECT Category, `Sub-Category`, concat(Category, "-", `Sub-Category`) from orders limit 10;
+
+SELECT UPPER(`Sub-Category`), lower(Category) from orders limit 10;
+
+SELECT Category, left(Category, 3), mid(Category, 4, 3), right(CAtegory, 3) from orders;
+
+SELECT `Customer name`, Locate(' ', `Customer name`) from orders;
+
+SELECT `Customer name`, substring(`Customer name`, 3,5) from orders;
+
+SELECT `Customer name`, substring(`Customer name`, locate(' ', `Customer name`) , length(`Customer name`)) from orders;
+
+SELECT `Customer name`, left(`Customer name`, locate(' ', `Customer name`)) from orders;
+
+SELECT `Customer name`, substring(`Customer name`, locate(' ', `Customer name`) , length(`Customer name`)), left(`Customer name`, locate(' ', `Customer name`))  from orders;
+
+SELECT DISTINCT(`Customer name`), substring_index(`Customer name`, ' ', 1), substring_index(`Customer name`, ' ', -1) 
+from orders
+Group by 1;
+  
+
+SELECT `Customer name`, substring_index(`Customer name`, ' ', 1), substring_index(`Customer name`, ' ', -1) from orders;
+
+SELECT `country/region`, replace(`country/region`, 'United States', 'USA') from orders;
+
+SELECT *from orders limit 10;
+
+SELECT sum(Sales) 
+from orders
+WHERE month(`Order Date`) = 3 and year(`Order Date`) = 2020;
+
+SELECT Region, AVG(datediff(`Ship Date`, `Order Date`)) 
+from orders
+group by 1;
+
+SELECT Distinct(year(`Order Date`)), sum(Sales)
+from orders
+group by 1;
+
+SELECT `Product ID`, left(`Product ID`, 3) from orders;
+
+SELECT `Product ID`, substring_index(`Product ID`,'-',1) from orders;
+SELECT `Product ID`, substring_index(`Product ID`,'-',2) from orders;
+SELECT `Product ID`, substring_index(`Product ID`,'-',-1) from orders;
+
+SELECT `Product Name` from orders 
+Where 
+`Product Name` like '%Hi-%';
+
+SELECT `Ship Mode`, substring_index(`Ship Mode`,' ',1) from orders;
+
+SELECT *FROM orders;
+
+Select avg(sales) from orders;
+SELECT `Order ID` , sales from orders
+Where Sales > 130.55336374337614 ;
+
+SELECT `Order ID` , sales from orders
+Where Sales > (Select avg(sales) from orders) ;
+
+select max(sales) from orders;
+
+select `order id`, sales from orders where sales = (select max(sales) from orders);
+
+select * from returns limit 10;
+
+SELECT * from orders where `order id` in (select `order id` from returns);
+
+select `order id`, sales from orders 
+where sales > (select avg(sales) from orders)
+;
+
+select category, avg(sales) as mean_sales from orders group by 1;
+
+##select category, `order id`, sales from orders 
+##where sales > (select avg(sales) from (select category, avg(sales) from orders group by 1) as category_sales);
+
+select `order id`, category, sales from orders as o
+where sales > (select avg(sales) from orders as i where i.category = o.category)
+;
+
+select `order id` from orders where sales = 999.98;
+
+select * from orders as o where NOT EXISTS (select `order id` from returns as r where r.`order id` = o.`order id`);
+
+
+select * from orders where sales >= ANY(select sales from orders where region = 'Central');
+
+
+SELECT * from orders where sales >= ALL (select sales from orders where region = 'Central');
+
+With category_sales as (select category, avg(sales) as mean_sales from orders group by 1)
+select category, sales from orders 
+where sales > (select mean_sales from category_sales where orders.category = category_sales.category);
+ 
+ WITH avg_sales AS 
+ (
+ select avg(sales) as average_sales from orders
+ )
+
+ select * from orders
+ where sales >= (select average_sales from avg_sales)
+ ;
+ 
+ with sales_profit as
+ (
+ select region, sum(sales) as sales, sum(profit) as profit
+ from orders
+ group by region
+ )
+ 
+ select region, 100*profit/sales
+ from sales_profit
+ ;
+ 
+ select *from orders where sales = (select max(sales) from orders); 
+ 
+ select * from orders where `order id` not in (select `order id` from returns);
+ 
+ select max(sales) from orders;
+ 
+ select region, sales, `order id` from orders as o where sales > (select avg(sales) from orders as i where i.region=o.region);
+ 
+ WITH ord as (select sum(sales) as sales_total, count(`Order ID`) as orders_total, segment from orders group by 3)
+ Select segment, sales_total/orders_total as AOV from ord; 
+ 
+ select sum(sales), segment from orders group by segment;
+ 
+#687551.1899999974	Consumer
+#239740.15999999995	Home Office
+#403569.64	Corporate
+ 
+select `order id`, segment, sales,
+sum(sales) OVER (partition by Segment) as tot_sales_in_segment
+from orders
+;
+ 
+select `order id`, segment, sales,
+sum(sales) OVER (partition by Segment) as sum_sales_in_segment,
+avg(sales) OVER (partition by Segment) as avg_sales_in_segment,
+min(sales) OVER (partition by Segment) as min_sales_in_segment,
+max(sales) OVER (partition by Segment) as max_sales_in_segment,
+count(1) OVER (partition by Segment) as total_orders_in_segment
+from orders
+;
+ 
+select `order id`, segment, sales,
+sum(sales) OVER (partition by Segment) as sum_sales_in_segment,
+avg(sales) OVER (partition by Segment) as avg_sales_in_segment,
+min(sales) OVER (partition by Segment) as min_sales_in_segment,
+max(sales) OVER (partition by Segment) as max_sales_in_segment,
+count(1) OVER (partition by Segment) as total_orders_in_segment,
+sum(sales) OVER (rows between unbounded preceding and unbounded following) as total_sales_in_dataset
+from orders
+;
+
+select sum(sales) from orders;
+ 
+ select `order id`, sales, segment,
+ row_number() OVER (partition by segment order by sales desc) as rowno_in_segment,
+ row_number() OVER (order by sales desc) as rowno_in_dataset,
+ rank() OVER (partition by segment order by sales desc) as rank_in_segment,
+ rank() OVER (order by sales desc) as rank_in_dataset,
+ dense_rank() OVER (partition by segment order by sales desc) as denserank_in_segment,
+ dense_rank() OVER (order by sales desc) as denserank_in_dataset
+ from orders;
+ 
+ select `order id`, sales, segment,
+ row_number() over (partition by segment order by sales desc) as rowno_by_segment
+ from orders;
+ 
+ select *
+ from 
+ (
+ select `order id`, sales, segment,
+ row_number() over (partition by segment order by sales desc) as rowno_by_segment
+ from orders
+ ) as a
+ where rowno_by_segment = 3
+ ;
+ 
+ select last_day(`order date`) as month, round(sum(sales)) as sales 
+ from orders
+ group by 1
+ ;
+
+WITH monthly_sales as 
+(
+select last_day(`order date`) as month, round(sum(sales)) as sales 
+from orders
+group by 1
+),
+ 
+mon_sales as 
+(select *,
+first_value(sales) over (order by month) as firstvalue,
+last_value(sales) over (order by month rows between unbounded preceding and unbounded following) as lastvalue,
+lead(sales) over (order by month) as next_month_sales_lead_value,
+lag(sales) over (order by month) as lagvalue_prev_month_sales
+from monthly_sales
+)
+select *, sales/lagvalue_prev_month_sales as mon_variation from mon_sales 
+;
+
+WITH monthly_sales as 
+(
+select last_day(`order date`) as month, round(sum(sales)) as sales 
+from orders
+group by 1
+)
+select *,
+lead(sales) over (order by month) as next_month_sales_lead_value,
+lead(sales,2) over (order by month) as next_month_sales_lead_value_2,
+lag(sales) over (order by month) as lagvalue_prev_month_sales,
+lag(sales,2) over (order by month) as lagvalue_prev_month_sales_2
+from monthly_sales
+;
+
+ select * from orders limit 10;
+ 
+ select `order id`, category, sales,
+ sum(sales) over (partition by category) as total_sales_by_category,
+ avg(sales) over (partition by category) as avg_sales_by_category,
+ max(sales) over (partition by category) as max_sales_by_category,
+ min(sales) over (partition by category) as min_sales_by_category,
+ count(`order id`) over (partition by category) as total_count
+from orders; 
+
+select * from (select category, sales, row_number() over (partition by category order by sales) as rowno
+from orders) as a
+where rowno = 2;
+
+WITH yearlysales as 
+(select round(sum(sales)) as sales, year(`order date`) as year from orders group by 2)
+
+select *, 
+lead(sales) over (order by year) as leadvalue,
+lag(sales) over (order by year) as lagvalue
+from yearlysales;
+
+select * from orders limit 2;
+select * from people limit 4;
+select * from returns limit 2;
+
+select `Order ID`, `Regional Manager`, o.Region, p.Region 
+from orders as o
+left join people as p
+on o.Region = p.Region
+;
+
+select o.region, sales, o.`Order ID`
+from orders o
+right join returns r
+on o.`Order ID` = r.`Order ID`
+;
+
+select o.region, sum(sales)
+from orders o
+right join returns r
+on o.`Order ID` = r.`Order ID`
+group by 1
+;
+
+
+select o.region, sales, o.`Order ID`, r.`Order ID`
+from orders o
+left join returns r
+on o.`Order ID` = r.`Order ID`
+where r.`Order ID` is null
+union
+select o.region, sales, o.`Order ID`, r.`Order ID`
+from returns r
+left join orders o
+on o.`Order ID` = r.`Order ID`
+where r.`Order ID` is null
+;
+
+
+select o.region, sales, o.`Order ID`, r.`Order ID`
+from orders o
+left join returns r
+on o.`Order ID` = r.`Order ID`
+where r.`Order ID` is not null
+union
+select o.region, sales, o.`Order ID`, r.`Order ID`
+from returns r
+left join orders o
+on o.`Order ID` = r.`Order ID`
+where r.`Order ID` is not null
+;
+
+select sales, `Order ID` from orders;
+
+select * from orders_subset;
+select sum(sales) from orders_subset;
+select sum(sales) from orders_subset where `order id` = 'US-2019-10380 0';
+
+select * from orders_enhanced_subset;
+
+call orders_2020;
+ 
+
+ 
+
+
+
