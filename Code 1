@@ -1,4 +1,8 @@
+-- Create a new schema named "SQL_Basics_Practice"
+
 DROP TABLE sales;
+
+-- Create a table in this new schema named "sales" using SQL "Create" command. It should have all the columns as per "Data_Sales" sheet. Make OrderId as primary key
 
 CREATE TABLE sales 
 (
@@ -14,6 +18,9 @@ Quantity INT,
 PRIMARY KEY(`Order ID`)
 )
 ;
+
+-- Insert 5 records into this table using INSERT operation
+
 INSERT INTO sales 
 (
 `Order ID`,
@@ -34,13 +41,21 @@ VALUES
 ('2005', '2022-01-08', '105','Company Z', 'Rama Rahim', 'Florida', 'Product 4', 405, 11)
 ;
 
+-- SELECT all columns of the table sorted by order date first to last and then by quantity highest to lowest
+
 SELECT *FROM sales ORDER BY `Order Date`, Quantity desc;
+
+-- Create a new table named "sales_bkp" from the existing "sales" table copying all rows & columns
 
 CREATE TABLE sales_bkp AS SELECT *FROM sales;
 
 SELECT *FROM sales_bkp; 
 
+--Delete the first row from sales_bkp
+
 DELETE FROM sales_bkp WHERE `Order ID` = 2001;
+
+-- Add a new column named "CreatedBy" that has default value of your name
 
 ALTER TABLE sales_bkp 
 ADD COLUMN Created Varchar(7) default 'Bhanu';
@@ -50,52 +65,63 @@ Rename Column Created TO CreatedBy;
 
 SELECT * FROM sales_bkp;
 
+-- SELECT ORDERID, CREATEDBY, SALESPERSON and PRICE from sales_bkp.
+
 SELECT `Order ID`, CreatedBy,  `Sales Person`, Price from sales_bkp;
+
+-- Remove "CreatedBy" column from sales_bkp
 
 ALTER TABLE sales_bkp
 DROP COLUMN CreatedBy;
 
 SELECT * FROM sales_bkp;
 
+-- Remove sales_bkp table from the schema 
+
 DROP Table sales_bkp;
 
-Create table sales_data 
-(
-`Order ID` Varchar(6) NOT NULL,
-`Order Date` date,
-`Customer ID` Varchar(10),
-`Customer Name` Varchar(15),
-`Sales Person` Varchar(15),
-Region Varchar(15),
-`Product_Type` Varchar(15),
-Price INT,
-Quantity INT,
-PRIMARY KEY(`Order ID`)
-)
-;
+-- Create a new table "sales_data" using data table import functionality. Import the "data_sales" sheet into this table.
 
-SELECT *FROM sales_data limit 10;
+Create sales_data as table data_sales;
+
+-- Inspect this table "sales_data" especially its columns data types and the SQL that generated this table
 
 DESCRIBE TABLE sales_data;
 
 DESCRIBE sales_data;
 
+-- SELECT all columns of this table
+
 SELECT *from sales_data;
+
+-- SELECT all columns of this table only for the State of California
 
 SELECT *from sales_data WHERE Region = 'California';
 
+-- Find the "Minimum", "Maximum", Average and Total values for Price and Quantity
+
 SELECT MIN(Price), MAX(Price), SUM(Price), AVG(Price), MIN(Quantity), MAX(Quantity), SUM(Quantity), AVG(Quantity) FROM sales_data;
 
+-- Count the number of orders occurring for each Product
+
 SELECT Product_Type, COUNT(`Order ID`) FROM sales_data Group by Product_Type;
+
+-- Create a "Revenue" column which is the product of Price and Quantity
 
 ALTER TABLE sales_Data
 ADD Column Revenue int DEFAULT (Price*Quantity);
 
 SELECT *from sales_data;
 
+-- Calculate the total revenue for each sales person
+
 SELECT `Sales Person`, SUM(Revenue) from sales_data Group by `Sales Person`;
 
+-- Get the list of orders for which revenue is between 1000 and 3000, for the state of TEXAS
+
 SELECT `Order ID` FROM sales_data WHERE (Revenue < 3000 and Revenue > 1000) AND Region = 'Texas';
+
+-- Get the list of Sales Person where total revenue is greater than 250000
 
 SELECT `Sales Person`, SUM(Revenue) AS TotalRevenue
 FROM sales_data
