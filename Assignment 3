@@ -21,11 +21,10 @@ SELECT * FROM west_sales;
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `monthly_sales`(IN Last_day date)
 BEGIN
-SELECT sum(sales) as Sales_tot, month(Last_day)  as 'Month' FROM orders
-group by 2;
+SELECT sales, month(Last_day), LAST_DAY(Last_Day)  as 'Month' FROM orders;
 END
 
-CALL monthly_sales(2020/01/02);
+CALL monthly_sales('2020/02/02');
 
 -- Create a stored function that takes ‘sales’ and ‘profit’ as input, and returns the profit margin (= profit/sales) as output
 
