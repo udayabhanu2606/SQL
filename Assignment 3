@@ -1,0 +1,39 @@
+-- Create a View that provides the order id, order date, customer name, sales value for only WEST region
+
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `west_sales` AS
+    SELECT 
+        `orders`.`Order ID` AS `Order ID`,
+        `orders`.`Order Date` AS `Order date`,
+        `orders`.`Customer Name` AS `Customer name`,
+        `orders`.`Sales` AS `Sales`
+    FROM
+        `orders`
+    WHERE
+        (`orders`.`Region` = 'West')
+
+SELECT * FROM west_sales;
+
+-- Create a stored procedure that takes the last day of any month as input and provides a list of all the orders placed in that month
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `monthly_sales`(IN Last_day date)
+BEGIN
+SELECT sum(sales) as Sales_tot, month(Last_day)  as 'Month' FROM orders
+group by 2;
+END
+
+CALL monthly_sales(2020/01/02);
+
+-- Create a stored function that takes ‘sales’ and ‘profit’ as input, and returns the profit margin (= profit/sales) as output
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `Profit_margin1`(Sales FLOAT, Profit FLOAT) RETURNS float
+    DETERMINISTIC
+BEGIN
+DECLARE Profit_margin1 FLOAT;
+RETURN Profit/Sales;
+END
+
+SELECT *, Profit_margin1(sales, profit) FROM orders;
